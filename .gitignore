@@ -15,3 +15,7 @@ venv/
 
 # Resources folder
 resources/
+reports/
+
+# Test files
+main.py
