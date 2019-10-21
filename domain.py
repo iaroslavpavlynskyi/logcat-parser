@@ -1,3 +1,5 @@
+from termcolor import colored
+
 class Parser:
 
     def __init__(self, logFile, serviceFile):
@@ -31,17 +33,25 @@ class Parser:
                    'text': (' ').join(scratch[7:])}
                 self.records.append(record)
 
+    def __pretty_print__(self,service ,errors, warnings):
+            errors = colored("{0} errors".format(errors), 'red')
+            warnings = colored("{0} warnings".format(warnings), 'yellow')
+            print(str(service) + ' contains ' + errors + ', ' + warnings)
+
     def create_reports_fro_each_service(self):
         for service in self.services:
             errorCounter = 0
+            warningCounter = 0
             f = open('reports/' + service + '.report', 'w+')
             for record in self.records:
                 if str(record['text']).__contains__(service):
                     f.write('[' + record['flag'] + ']' + record['service'] + ' ' + record['text'] + '\n')
+
                     if str(record['flag']).__eq__('E'):
                         errorCounter += 1
                         self.commonErrorCounter += 1
-
-            print(str(service) + ' contains ' + str(errorCounter) + ' errors')
+                    if str(record['flag'].__eq__('W')):
+                        warningCounter += 1
+            self.__pretty_print__(service,errorCounter, warningCounter)
 
         print ('Total error: ' + str(self.commonErrorCounter))
